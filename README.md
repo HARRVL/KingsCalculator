@@ -1,6 +1,6 @@
 # Kings Solar Calculator
 
-<img src="kings.PNG" alt="King's Logo" width="100">
+<img src="kings.PNG" alt="King's Logo" width="50">
 
 
 ## Description
