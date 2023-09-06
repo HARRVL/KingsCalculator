@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<div style="text-align: center;">
+  <img src="kings.PNG" alt="King's Logo" style="display: block; margin-left: auto; margin-right: auto; width: 180px;">
+  <h2>Kings Solar Calculator</h2>
+</div>
+
+<div class="centered-form">
+<form id="consumptionForm">
+  <h3>Enter monthly consumption for each month:</h3>
+  <div id="consumptionInputs"></div>
+  <label>Solar Module Wattage: <input type="number" id="solarModuleWattage"></label><br>
+  <input type="button" value="Calculate" onclick="calculate()">
+</form>
+</div>
+
+<h3>Results:</h3>
+<p id="monthlyAverage"></p>
+<p id="dailyAverage"></p>
+<p id="systemSizeKW"></p>
+<p id="individualConsumption"></p>
+<p id="numberOfSolarModules"></p>
+
+<h3>Consumption Bar Chart:</h3>
+<canvas id="barChart"></canvas>
+
+<h3>Consumption Line Graph:</h3>
+<canvas id="lineChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+for(let i = 0; i < 13; i++){
+    let newLabel = document.createElement('label');
+    newLabel.textContent = `Month ${i+1}: `;
+    let newInput = document.createElement('input');
+    newInput.type = 'number';
+    newInput.name = 'consumption';
+    newLabel.appendChild(newInput);
+    document.getElementById('consumptionInputs').appendChild(newLabel);
+    document.getElementById('consumptionInputs').appendChild(document.createElement('br'));
+}
+
+function calculate(){
+    let consumption = document.getElementsByName('consumption');
+    let solarModuleWattage = document.getElementById('solarModuleWattage').value;
+    let sum = 0;
+    let monthlyConsumption = [];
+    for(let i = 0; i < consumption.length; i++){
+        sum += Number(consumption[i].value);
+        monthlyConsumption.push(Number(consumption[i].value));
+    }
+    let monthlyAverage = sum / 13;
+    let dailyAverage = monthlyAverage / 30;
+    let systemSizeKW = (dailyAverage / 5.3) / 0.75;
+    let numberOfSolarModules = (systemSizeKW * 1000) / solarModuleWattage;
+
+    document.getElementById('monthlyAverage').textContent = `Average monthly consumption is: ${monthlyAverage.toFixed(2)} kwh`;
+    document.getElementById('dailyAverage').textContent = `Average daily consumption is: ${dailyAverage.toFixed(2)} kwh`;
+    document.getElementById('systemSizeKW').textContent = `System size is: ${systemSizeKW.toFixed(2)} KW`;
+    document.getElementById('individualConsumption').textContent = `The monthly consumption values you entered are:\n${monthlyConsumption.join(', ')} kwh`;
+    document.getElementById('numberOfSolarModules').textContent = `Number of solar modules needed is: ${numberOfSolarModules.toFixed(2)}`;
+
+    createBarChart(monthlyConsumption);
+    createLineGraph(monthlyConsumption);
+}
+
+function createBarChart(data){
+    let ctx = document.getElementById('barChart').getContext('2d');
+    let labels = Array.from({length: 13}, (_, i) => `Month ${i+1}`);
+    let chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Monthly Consumption',
+                data: data,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+function createLineGraph(data){
+    let ctx = document.getElementById('lineChart').getContext('2d');
+    let labels = Array.from({length: 13}, (_, i) => `Month ${i+1}`);
+    let chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Monthly Consumption',
+                data: data,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+    });
+}
+</script>
+
+<style>
+.centered-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+</style>
+
+</body>
+</html>
