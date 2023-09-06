@@ -1,6 +1,7 @@
 # Kings Solar Calculator
 
-![King's Logo](kings.PNG)
+<img src="kings.PNG" alt="King's Logo" width="100">
+
 
 ## Description
 The Kings Solar Calculator is a web application designed to assist users in determining their solar energy needs. By entering monthly consumption data, the calculator provides an average monthly consumption, average daily consumption, the system size in KW, and the number of solar modules required.
